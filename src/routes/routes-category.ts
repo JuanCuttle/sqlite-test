@@ -13,6 +13,8 @@ const router = Router();
 
 router.get('/', handlerCategory.allCategories);
 
+router.get('/:id', handlerCategory.getCategory);
+
 router.post('/', handlerCategory.addCategory);
 
 router.delete('/:id', handlerCategory.deleteCategory);

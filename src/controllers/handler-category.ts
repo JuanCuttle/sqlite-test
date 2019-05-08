@@ -29,18 +29,28 @@ static allCategories = async (req: Request, res: Response) => {
 
 static getCategory = async (req: Request, res: Response) => {
   //Get the ID from the url
-  const id: number = req.params.id;
+  const paramid: number = req.params.id;
 
   //Get the user from database
-  const userRepository = getRepository(User);
-  try {
-    const user = await userRepository.findOneOrFail(id, {
-      select: ["id", "username", "role"] //We dont want to send the password on response
-    });
-    res.send(user);
-  } catch (error) {
-    res.status(404).send("User not found");
-  }
+//   const userRepository = getRepository(User);
+//   try {
+//     const user = await userRepository.findOneOrFail(id, {
+//       select: ["id", "username", "role"] //We dont want to send the password on response
+//     });
+//     res.send(user);
+//   } catch (error) {
+//     res.status(404).send("User not found");
+//   }
+
+    const catRepository = getRepository(Category);
+    try {
+        const category = await catRepository.findOneOrFail({id: paramid}, {
+            select: ["_id", "id", "name", "childrenIds"]
+        });
+        res.send(category)
+    } catch (error) {
+        res.status(404).send("Category not found");
+    }
 };
 
 static addCategory = async (req: Request, res: Response) => {
@@ -79,7 +89,8 @@ static addCategory = async (req: Request, res: Response) => {
                 });
                 console.log(child);
             } catch(e1){
-                res.status(500).send("error, child non-existent")
+                res.status(500).send("error, child non-existent");
+                return;
             }
         }
         await catRepository.save(category);
@@ -132,17 +143,17 @@ static updateCategory = async (req: Request, res: Response) => {
 
 static deleteCategory = async (req: Request, res: Response) => {
   //Get the ID from the url
-  const id = req.params.id;
+  const paramid = req.params.id;
 
   const catRepository = getRepository(Category);
   let category: Category;
   try {
-    category = await catRepository.findOneOrFail(id);
+    category = await catRepository.findOneOrFail({id: paramid});
   } catch (error) {
     res.status(404).send("Category not found");
     return;
   }
-  catRepository.delete(id);
+  catRepository.delete({id: paramid});
 
   //After all send a 204 (no content, but accepted) response
   res.status(204).send();
