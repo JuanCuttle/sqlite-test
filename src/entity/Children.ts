@@ -10,23 +10,19 @@ import {
  // import * as bcrypt from "bcryptjs";
   
   @Entity()
-  @Unique(["id"])
-  export class Category {
+  @Unique(["_id"])
+  export class Children {
 
     @PrimaryGeneratedColumn()
     //@Column()
     _id: number;
 
     @Column()
-    id: number;
+    idParent: number;
   
     @Column()
     //@Length(4, 20)
-    name: string;
-  
-    //@Column()
-    //@Length(0, 100)
-    //childrenIds: number;
+    idChild: number;
 
   }
   
